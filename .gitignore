@@ -23,6 +23,7 @@ xcuserdata/
 MANIFEST
 dist/
 build/
+DerivedData/
 
 # Backup files
 *~.nib
