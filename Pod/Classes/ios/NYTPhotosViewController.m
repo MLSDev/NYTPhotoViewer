@@ -137,8 +137,21 @@ static const UIEdgeInsets NYTPhotosViewControllerCloseButtonImageInsets = {3, 0,
 - (void)viewWillLayoutSubviews {
     [super viewWillLayoutSubviews];
     
-    self.pageViewController.view.frame = self.view.bounds;
-    self.overlayView.frame = self.view.bounds;
+    CGRect correctFrame = [self getCorrectOverlayFrame];
+    self.pageViewController.view.frame = correctFrame;
+    self.overlayView.frame = correctFrame;
+}
+
+- (CGRect)getCorrectOverlayFrame {
+    CGRect  statusBarFrame = [UIApplication sharedApplication].statusBarFrame;
+    CGRect safeAreaFrame = self.view.bounds;
+    if (@available(iOS 11, *)) {
+        safeAreaFrame = self.view.safeAreaLayoutGuide.layoutFrame;
+    }
+    CGFloat height = safeAreaFrame.origin.y + safeAreaFrame.size.height - statusBarFrame.size.height;
+    CGFloat y = statusBarFrame.origin.y + statusBarFrame.size.height;
+    CGRect correctFrame = CGRectMake(safeAreaFrame.origin.x, y, safeAreaFrame.size.width, height);
+    return correctFrame;
 }
 
 - (BOOL)prefersStatusBarHidden {
